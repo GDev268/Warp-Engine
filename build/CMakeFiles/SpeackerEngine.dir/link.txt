@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/SpeackerEngine.dir/source/main.cpp.o -o SpeackerEngine 
