@@ -1,7 +1,9 @@
 #include <iostream>
-#include "Window.hpp"
+#include <string>
+
+#include "speackerEngine/Game.hpp"
 
 int main(char argc, char **argv){
-    Window window = Window();
-    std::cout << "Hello, world!" << std::endl;
+    Speacker::Game* game = new Speacker::Game();
+    return 0;
 }
