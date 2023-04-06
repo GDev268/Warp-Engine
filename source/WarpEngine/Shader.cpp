@@ -1,8 +1,7 @@
 #include "WarpEngine/Graphics/Shader.hpp"
 
-int Warp::Shader::currentID = 0;
 
-Warp::Shader::Shader(const char* vertexShader, const char* fragmentShader) : id(currentID++)
+Warp::Shader::Shader(const char* vertexShader, const char* fragmentShader)
 {
     vertexShaders.push_back(loadShader(vertexShader,GL_VERTEX_SHADER));
     fragmentShaders.push_back(loadShader(fragmentShader,GL_FRAGMENT_SHADER));
@@ -21,7 +20,7 @@ Warp::Shader::Shader(const char* vertexShader, const char* fragmentShader) : id(
 
 }
 
-Warp::Shader::Shader() : id(currentID++)
+Warp::Shader::Shader()
 {
     vertexShaders.push_back(loadShader("shaders/DefaultShaderVertex.glsl",GL_VERTEX_SHADER));
     fragmentShaders.push_back(loadShader("shaders/DefaultShaderFragment.glsl",GL_FRAGMENT_SHADER));

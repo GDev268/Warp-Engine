@@ -26,8 +26,6 @@ namespace Warp{
             std::vector<GLuint> vertexShaders;
             std::vector<GLuint> fragmentShaders;
 
-            static int currentID;
-            int id;
             unsigned int program;
     };
 };
