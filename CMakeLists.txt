@@ -7,7 +7,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 message(STATUS "Source dir: ${CMAKE_SOURCE_DIR}")
 
-project(SpeackerEngine, VERSION 0.1.0)
+project(WarpEngine, VERSION 0.1.0)
 
 include_directories("include/")
 
@@ -33,15 +33,15 @@ include_directories(${VORBIS_INCLUDE_DIR})
 find_package(CURL REQUIRED)
 include_directories(${CURL_INCLUDE_DIR})
 
-add_library(SpeackerEngine SHARED ${SPEACKER_SOURCE})
+add_library(WarpEngine SHARED ${SPEACKER_SOURCE})
 
-target_link_libraries(SpeackerEngine ${GLEW_LIBRARIES})
-target_link_libraries(SpeackerEngine ${OPENGL_LIBRARY})
-target_link_libraries(SpeackerEngine ${GLFW_LIBRARY})
-target_link_libraries(SpeackerEngine ${SOIL_LIBRARY})
-target_link_libraries(SpeackerEngine ${CURL_LIBRARIES})
-target_link_libraries(SpeackerEngine ${OPENAL_LIBRARY})
-target_link_libraries(SpeackerEngine ${VORBISFILE_LIBRARY})
-target_link_libraries(SpeackerEngine ${CURL_LIBRARY})
+target_link_libraries(WarpEngine ${GLEW_LIBRARIES})
+target_link_libraries(WarpEngine ${OPENGL_LIBRARY})
+target_link_libraries(WarpEngine ${GLFW_LIBRARY})
+target_link_libraries(WarpEngine ${SOIL_LIBRARY})
+target_link_libraries(WarpEngine ${CURL_LIBRARIES})
+target_link_libraries(WarpEngine ${OPENAL_LIBRARY})
+target_link_libraries(WarpEngine ${VORBISFILE_LIBRARY})
+target_link_libraries(WarpEngine ${CURL_LIBRARY})
 
-install(TARGETS SpeackerEngine DESTINATION lib)
+install(TARGETS WarpEngine DESTINATION lib)

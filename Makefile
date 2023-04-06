@@ -2,17 +2,17 @@ engine:
 	@mkdir -p build
 	cd build && cmake .. && make
 
-	rm -rf /usr/include/SpeackerEngine
-	rm -rf /usr/lib/libSpeackerEngine.so
-	cp -r include/speackerEngine/ /usr/include
-	cp -r build/libSpeackerEngine.so /usr/lib/libSpeackerEngine.so
+	rm -rf /usr/include/WarpEngine
+	rm -rf /usr/lib/libWarpEngine.so
+	cp -r include/WarpEngine/ /usr/include
+	cp -r build/libWarpEngine.so /usr/lib/libWarpEngine.so
 
 
-	g++ main.cpp -Lbuild/ -lSpeackerEngine -lGL -lGLU -lglfw -o export/SpeackerEngine -Iinclude/ -O3
-	export/SpeackerEngine
+	g++ main.cpp -Lbuild/ -lWarpEngine -O3 -Wall -fPIC -g -w -lGL -lGLEW -lGLU -lglfw -o export/WarpEngine -Iinclude/ -O3
+	export/WarpEngine
 app:
-	g++ main.cpp -Lbuild/ -lSpeackerEngine -lGL -lGLU -lglfw -o export/SpeackerEngine -Iinclude/ -O3
-	export/SpeackerEngine
+	g++ main.cpp -Lbuild/ -lWarpEngine -lGL -lGLU -lglfw -o export/WarpEngine -Iinclude/ -O3
+	export/WarpEngine
 clean:
 	rm -rf build/
 	rm -rf obj/

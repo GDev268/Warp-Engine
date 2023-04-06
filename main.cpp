@@ -1,9 +1,9 @@
 #include <iostream>
 #include <string>
 
-#include "speackerEngine/Game.hpp"
+#include "WarpEngine/Application/Game.hpp"
 
 int main(char argc, char **argv){
-    Speacker::Game* game = new Speacker::Game();
+    Warp::Game* game = new Warp::Game("Warp Engine",1280,720,60);
     return 0;
 }

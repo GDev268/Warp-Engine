@@ -4,19 +4,19 @@
 #include "speackerEngine/Common.hpp"
 #include "speackerEngine/Window.hpp"
 
-namespace Speacker
+namespace Warp
 {
     class Game
     {
         public:
-        Window* window;
+        GLFWwindow* window;
 
-        Game();
         Game(const char* title, int width, int height, int framerate);
         ~Game() {};
 
         void processInput();
         void init();
+        static void framebuffer_size_callback(GLFWwindow *window, int width, int height);
     };
 }
 
