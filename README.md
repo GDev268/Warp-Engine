@@ -1,7 +1,7 @@
 <p align="center">
 <picture>
   <source width="50%" height="50%" media="(prefers-color-scheme: dark)" srcset="./docs/WarpEngineDarkMode.png">
-  <img width="400" height="500" alt="Light Mode" src="./docs/WarpEngineLightMode.png">
+  <img width="50%" height="50%" alt="Light Mode" src="./docs/WarpEngineLightMode.png">
 </picture>
   </p>
   <hr>
