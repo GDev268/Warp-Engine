@@ -1,4 +1,4 @@
-#include "WarpEngine/Application/Game.hpp"
+#include "WarpEngine/Application/App.hpp"
 #include "WarpEngine/Graphics/Shader.hpp"
 
 Warp::Game::Game(const char *title, int width, int height, int framerate)
@@ -7,12 +7,10 @@ Warp::Game::Game(const char *title, int width, int height, int framerate)
     
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_RESIZABLE,GL_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE,GL_TRUE);
     glfwWindowHint(GLFW_MAXIMIZED,GL_TRUE);
 
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    // window = new Window(title,width,height);
 
     window = glfwCreateWindow(width, height, title, NULL, NULL);
     glfwMakeContextCurrent(window);

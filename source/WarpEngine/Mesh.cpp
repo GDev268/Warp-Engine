@@ -1,5 +1,4 @@
 #include "WarpEngine/Graphics/Mesh.hpp"
-#include "Mesh.hpp"
 
 Mesh::Mesh(std::vector<float> vertPos, std::vector<float> texCoords, std::vector<float> normalPos)
 {
