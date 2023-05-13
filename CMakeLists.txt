@@ -13,19 +13,14 @@ include_directories("include/")
 
 file(GLOB_RECURSE SPEACKER_SOURCE CONFIGURE_DEPENDS "source/*.cpp")
 
-find_package(OpenGL REQUIRED)
+find_package(Vulkan REQUIRED)
+include_directories(WarpEngine PUBLIC ${Vulkan_INCLUDE_DIRS})
 
 find_package(glfw3 3.3 REQUIRED)
 include_directories(${GLFW_INCLUDE_DIRS})
 
-find_package(SOIL REQUIRED)
-include_directories(${SOIL_INCLUDE_DIRS})
-
 find_package(GLEW REQUIRED)
 include_directories(${GLEW_INCLUDE_DIRS})
-
-find_package(OpenAL REQUIRED)
-include_directories(${OPENAL_INCLUDE_DIR})
 
 find_package(LibVorbisfile REQUIRED)
 include_directories(${VORBIS_INCLUDE_DIR})
@@ -35,10 +30,9 @@ include_directories(${CURL_INCLUDE_DIR})
 
 add_library(WarpEngine SHARED ${SPEACKER_SOURCE})
 
-target_link_libraries(WarpEngine ${GLEW_LIBRARIES})
+target_link_libraries(WarpEngine Vulkan::Vulkan)
 target_link_libraries(WarpEngine ${OPENGL_LIBRARY})
 target_link_libraries(WarpEngine ${GLFW_LIBRARY})
-target_link_libraries(WarpEngine ${SOIL_LIBRARY})
 target_link_libraries(WarpEngine ${CURL_LIBRARIES})
 target_link_libraries(WarpEngine ${OPENAL_LIBRARY})
 target_link_libraries(WarpEngine ${VORBISFILE_LIBRARY})

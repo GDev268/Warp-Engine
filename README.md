@@ -5,7 +5,7 @@
 </picture>
   </p>
   <hr>
-<p align="center" padding-top="-50px">This is an project for last year professional project on my high school that i started on the second year</p>
+<p align="center" padding-top="-50px">This is an project for last year professional project on my high school of making an Vulkan game engine that i started on the second year</p>
 
 ## ```Checklist:```
 - [ ] Minimal 3D Support
