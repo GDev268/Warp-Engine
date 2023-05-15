@@ -1,6 +1,7 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 
+#define GLFW_INCLUDE_VULKAN
 #include "WarpEngine/Common.hpp"
 
 namespace WarpEngine
@@ -12,10 +13,20 @@ namespace WarpEngine
         ~Window();
 
         VkExtent2D getExtent() const { return {static_cast<uint32_t>(width), static_cast<uint32_t>(height)}; }
+        bool resetWindowResizedFlag() { frameBufferResized = false;}
+        GLFWwindow* getWindow() const { return window;}
+
+        void createWindowSurface(VkInstance instance,VkSurfaceKHR *surface);
 
         GLFWwindow *window;
 
-        const int width, height;
+        int width, height;
+        bool frameBufferResized = false;
+
+        std::string windowname;
+
+        private:
+        static void framebufferResizeCallback(GLFWwindow *window, int width, int height);
     };
 }
 

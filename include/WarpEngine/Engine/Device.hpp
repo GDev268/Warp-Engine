@@ -59,6 +59,8 @@ namespace WarpEngine
         void pickPhysicalDevice();
         void createLogicalDevice();
         void createCommandPool();
+        void getVulkanVersion();
+
 
         bool isDeviceSuitable(VkPhysicalDevice physicalDevice);
         bool checkValidationLayerSupport();
