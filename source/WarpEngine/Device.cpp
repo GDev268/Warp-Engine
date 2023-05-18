@@ -196,10 +196,63 @@ namespace WarpEngine
 
     void Device::createLogicalDevice()
     {
+        QueueFamily indices = findQueueFamilies(physicalDevice);
+
+        std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+        std::vector<uint32_t> uniqueQueueFamilies = {indices.graphicsFamily,indices.presentFamily};
+        
+        float queuePriority = 1.0f;
+        for(uint32_t queueFamily : uniqueQueueFamilies){
+            VkDeviceQueueCreateInfo createInfo = {};
+            createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+            createInfo.queueFamilyIndex = queueFamily;
+            createInfo.queueCount = 1;
+            createInfo.pQueuePriorities = &queuePriority;
+            queueCreateInfos.push_back(createInfo);
+        }
+
+        VkPhysicalDeviceFeatures deviceFeatures = {};
+        deviceFeatures.samplerAnisotropy = VK_TRUE;;
+
+        VkDeviceCreateInfo createInfo = {};
+        createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+
+        createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
+        createInfo.pQueueCreateInfos = queueCreateInfos.data();
+
+        createInfo.pEnabledFeatures = &deviceFeatures;
+        createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
+        createInfo.ppEnabledExtensionNames = deviceExtensions.data();
+
+        if(enableValidationLayers){
+            createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+            createInfo.ppEnabledLayerNames = validationLayers.data();
+        }
+        else{
+            createInfo.enabledLayerCount = 0;
+        }
+
+        if(vkCreateDevice(physicalDevice, &createInfo,nullptr,&_device) != VK_SUCCESS){
+            throw std::runtime_error("ERROR 7: Failed to create logical device!");
+        }
+
+        vkGetDeviceQueue(_device,indices.graphicsFamily,0,&graphicsQueue);
+        vkGetDeviceQueue(_device,indices.presentFamily,0,&presentQueue);
+
     }
 
     void Device::createCommandPool()
     {
+        QueueFamily queueFamilyIndices = findQueueFamilies(physicalDevice);
+
+        VkCommandPoolCreateInfo createInfo{};
+        createInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+        createInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily;
+        createInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+
+        if(vkCreateCommandPool(_device,&createInfo,nullptr,&commandPool) != VK_SUCCESS){
+            throw std::runtime_error("ERROR 8: Couldn't create command Pool!");
+        }
     }
 
     void Device::getVulkanVersion()
@@ -251,7 +304,22 @@ namespace WarpEngine
     bool WarpEngine::Device::isDeviceSuitable(VkPhysicalDevice physicalDevice)
     {
         QueueFamily indices = findQueueFamilies(physicalDevice);
+
+        bool extensionsSupported = checkDeviceExtensionSupport(physicalDevice);
+        
+        bool swapChainAdequate = false;
+        if(extensionsSupported){
+            SwapChainSupportDetails swapchainSupport = querySwapchainSupport(physicalDevice);
+            swapChainAdequate = !swapchainSupport.surfaceFormats.empty() && !swapchainSupport.presentModes.empty();
+        }
+
+        VkPhysicalDeviceFeatures physicalDeviceFeatures;
+        vkGetPhysicalDeviceFeatures(physicalDevice,&physicalDeviceFeatures);
+
+        return indices.isComplete() && extensionsSupported 
+        && swapChainAdequate && physicalDeviceFeatures.samplerAnisotropy;
     }
+    
     bool Device::checkValidationLayerSupport()
     {
         return false;
