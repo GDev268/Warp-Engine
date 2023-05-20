@@ -77,7 +77,10 @@
         "shared_mutex": "cpp",
         "span": "cpp",
         "typeindex": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "charconv": "cpp",
+        "format": "cpp",
+        "stdfloat": "cpp"
     },
     "cmake.configureOnOpen": true
 }
