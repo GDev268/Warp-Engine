@@ -5,7 +5,7 @@
 #include "WarpEngine/Engine/Window.hpp"
 #include "WarpEngine/Engine/Device.hpp"
 
-int main(char argc, char **argv){
+int main(int argc, char *argv[]){
   
     glfwInit();
 

@@ -54,6 +54,7 @@ namespace WarpEngine
         VkSurfaceKHR surface;
         VkQueue graphicsQueue;
         VkQueue presentQueue;
+        VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 
     private:
         void createInstance();
@@ -74,7 +75,6 @@ namespace WarpEngine
 
         VkInstance instance;
         VkDebugUtilsMessengerEXT debugMessenger;
-        VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
         Window window;
 
         const std::vector<const char *> validationLayers = {"VK_LAYER_KHRONOS_validation"};
