@@ -414,6 +414,17 @@ namespace WarpEngine
         return requiredExtensions.empty();
     }
 
+    uint32_t Device::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
+    {
+        VkPhysicalDeviceMemoryProperties memoryProperties;
+        vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
+        for(uint32_t i = 0; memoryProperties.memoryTypeCount;i++){
+            if(typeFilter & (i << 1) && (memoryProperties.memoryTypes[i].propertyFlags & properties) == properties){
+                return i;
+            }
+        }
+    }
+
     VkFormat Device::findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features)
     {
         for(VkFormat format : candidates){

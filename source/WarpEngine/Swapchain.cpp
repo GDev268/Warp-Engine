@@ -160,6 +160,50 @@ namespace WarpEngine
 
     void SwapChain::createDepthResource()
     {
+        VkFormat depthFormat = getDepthFormat();
+        swapChainDepthFormat = depthFormat;
+
+        depthImages.resize(imageCount());
+        depthImageMemories.resize(imageCount());
+        depthImageViews.resize(imageCount());
+
+        for(int i = 0; i < imageCount();i++){
+            VkImageCreateInfo createInfo{};
+            createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+            createInfo.imageType = VK_IMAGE_TYPE_2D;
+            createInfo.extent.width = swapChainExtent.width;
+            createInfo.extent.height = swapChainExtent.height;
+            createInfo.extent.depth = 1;
+            createInfo.mipLevels = 1;
+            createInfo.arrayLayers = 1;
+            createInfo.format = depthFormat;
+            createInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+            createInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+            createInfo.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+            createInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+            createInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+            createInfo.flags = 0;
+
+            if(vkCreateImage(device._device,&createInfo,nullptr,&depthImages[i]) != VK_SUCCESS){
+                throw std::runtime_error("Couldn't create image!");
+            }
+
+            VkMemoryRequirements memoryRequirements;
+            vkGetImageMemoryRequirements(device._device,depthImages[i],&memoryRequirements);
+
+            VkMemoryAllocateInfo allocInfo{};
+            allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+            allocInfo.allocationSize = memoryRequirements.size;
+            allocInfo.memoryTypeIndex = device.findMemoryType(memoryRequirements.memoryTypeBits,VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+
+            if(vkAllocateMemory(device._device,&allocInfo,nullptr,&depthImageMemories[i]) != VK_SUCCESS){
+                throw std::runtime_error("Couldn't allocate image memory!");
+            }
+
+            if(vkBindImageMemory(device._device,depthImages[i],depthImageMemories[i],0) != VK_SUCCESS){
+                throw std::runtime_error("Couldn't bind image memory!");
+            }
+        }
     }
 
     void SwapChain::createRenderPass()
@@ -187,10 +231,61 @@ namespace WarpEngine
         colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
         colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
         colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+        VkAttachmentReference colorAttachmentReference{};
+        colorAttachmentReference.attachment = 0;
+        colorAttachmentReference.layout = VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL;
+
+        VkSubpassDescription subpass = {};
+        subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+        subpass.colorAttachmentCount = 1;
+        subpass.pColorAttachments = &colorAttachmentReference;
+        subpass.pDepthStencilAttachment = &depthAttachmentReference;
+    
+        VkSubpassDependency subpassDependency = {};
+        subpassDependency.dstSubpass = 0;
+        subpassDependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+        subpassDependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+        subpassDependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+        subpassDependency.srcAccessMask = 0;
+        subpassDependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+
+        std::array<VkAttachmentDescription , 2> attachments = {colorAttachment,depthAttachment};
+        VkRenderPassCreateInfo createInfo{};
+        createInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+        createInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+        createInfo.pAttachments = attachments.data();
+        createInfo.subpassCount = 1;
+        createInfo.pSubpasses = &subpass;
+        createInfo.dependencyCount = 1;
+        createInfo.pDependencies = &subpassDependency;
+
+        if(vkCreateRenderPass(device._device,&createInfo,nullptr,&renderPass) != VK_SUCCESS){
+            throw std::runtime_error("Couldn't create the renderpass!");
+        }
     }
 
     void SwapChain::createMainFramebuffer()
     {
+        swapChainFramebuffers.resize(imageCount());
+        for(size_t i = 0; i < imageCount();i++){
+            std::array<VkImageView,2> attachments = {swapChainImageViews[i],depthImageViews[i]};
+
+            VkExtent2D swapchainExtent = getSwapChainExtent();
+
+            VkFramebufferCreateInfo createInfo{};
+            createInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+            createInfo.renderPass = renderPass;
+            createInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+            createInfo.pAttachments = attachments.data();
+            createInfo.width = swapChainExtent.width;
+            createInfo.height = swapChainExtent.height;
+            createInfo.layers = 1;
+
+            if(vkCreateFramebuffer(device._device,&createInfo,nullptr,&swapChainFramebuffers[i]) != VK_SUCCESS){
+                throw std::runtime_error("Couldn't create framebuffer");
+            }
+        }
     }
 
     void SwapChain::createSyncObjects()
