@@ -7,11 +7,8 @@ engine:
 	cp -r include/WarpEngine/ /usr/include
 	cp -r build/libWarpEngine.so /usr/lib/libWarpEngine.so
 
-
-	clang++ -std=c++20 main.cpp -Lbuild/ -lWarpEngine -O3 -Wall -Wextra -g -w -lvulkan -lglfw -o export/WarpEngine -Iinclude/ -O3
-	export/WarpEngine
-
-debug:
+	clang++ -std=c++20 main.cpp -Lbuild/ -lWarpEngine -O3 -Wall -fPIC -g -w -lvulkan -lglfw -o export/WarpEngine -Iinclude/ -O3
+fdebug:
 	@mkdir -p build
 	cd build && cmake .. && make
 
@@ -22,7 +19,6 @@ debug:
 
 
 	clang++ -std=c++20 -fsanitize=address -fno-omit-frame-pointer main.cpp -Lbuild/ -lWarpEngine -O3 -Wall -Wextra -g -w -lvulkan -lglfw -o export/WarpEngine -Iinclude/ -O3
-	export/WarpEngine
 app:
 	clang++ -std=c++20 -fsanitize=address -fno-omit-frame-pointer main.cpp -Lbuild/ -lWarpEngine -o export/WarpEngine -Iinclude/ -O3
 	export/WarpEngine

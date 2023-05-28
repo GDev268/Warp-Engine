@@ -1,7 +1,7 @@
 #ifndef IMAGE_HPP
 #define IMAGE_HPP
 
-#include "WarpEngine/System/Utils.hpp"
+#include "WarpEngine/Data/Utils.hpp"
 
 namespace WarpEngine{
     class Image{

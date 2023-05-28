@@ -5,12 +5,13 @@
 #include "WarpEngine/Engine/Window.hpp"
 #include "WarpEngine/Engine/Device.hpp"
 
-int main(int argc, char *argv[]){
+int main(){
   
     glfwInit();
-
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    glfwVulkanSupported();  
+    glfwWindowHint(GLFW_CLIENT_API,GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
 
     WarpEngine::Window window = WarpEngine::Window("Warp Engine",1280,720);
     WarpEngine::Device device = WarpEngine::Device(window);

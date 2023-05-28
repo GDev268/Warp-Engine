@@ -290,19 +290,62 @@ namespace WarpEngine
 
     void SwapChain::createSyncObjects()
     {
+        imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+        renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+        inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
+        imagesInFlight.resize(imageCount(),VK_NULL_HANDLE);
+
+        VkSemaphoreCreateInfo semaphoreInfo{};
+        semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+        VkFenceCreateInfo fenceInfo{};
+        fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+        fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+        
+        for(size_t i = 0;i < MAX_FRAMES_IN_FLIGHT;i++){
+            if(vkCreateSemaphore(device._device,&semaphoreInfo,nullptr,&imageAvailableSemaphores[i]) != VK_SUCCESS ||
+            vkCreateSemaphore(device._device,&semaphoreInfo,nullptr,&imageAvailableSemaphores[i]) != VK_SUCCESS ||
+            vkCreateFence(device._device,&fenceInfo,nullptr,&inFlightFences[i]) != VK_SUCCESS){
+                throw std::runtime_error("Couldn't create the syncronization objects for the frame!");
+            }
+        }
     }
 
     VkSurfaceFormatKHR WarpEngine::SwapChain::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats)
     {
-        return VkSurfaceFormatKHR();
+       for(const auto &availableFormat : availableFormats){
+            if(availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && 
+            availableFormat.colorSpace == VK_COLORSPACE_SRGB_NONLINEAR_KHR ){
+                return availableFormat;
+            }
+       }
     }
     VkPresentModeKHR SwapChain::chooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes)
     {
-        return VkPresentModeKHR();
+        for(const auto &availablePresentMode : availablePresentModes){
+            if(availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR){
+                std::cout << "Present Mode: Mailbox" << std::endl;
+                return availablePresentMode;
+            }
+        }
+
+        std::cout << "Present mode: V-Sync" << std::endl;
+        return VK_PRESENT_MODE_FIFO_KHR;
     }
     VkExtent2D SwapChain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities)
     {
-        return VkExtent2D();
+        if(capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
+            return capabilities.currentExtent;
+        else{
+            VkExtent2D actualExtent = windowExtent;
+            actualExtent.width = std::max(capabilities.minImageExtent.width,
+            std::min(capabilities.minImageExtent.width,actualExtent.width));
+            
+            actualExtent.height = std::max(capabilities.minImageExtent.height,
+            std::min(capabilities.minImageExtent.height,actualExtent.height));
+            
+            return actualExtent;
+        }
     }
 
     VkFormat SwapChain::getDepthFormat()
