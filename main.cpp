@@ -15,7 +15,7 @@ int main(){
 
     WarpEngine::Window window = WarpEngine::Window("Warp Engine",1280,720);
     WarpEngine::Device device = WarpEngine::Device(window);
-<\  
+  
 
     while(!glfwWindowShouldClose(window.window)){
         glfwPollEvents();

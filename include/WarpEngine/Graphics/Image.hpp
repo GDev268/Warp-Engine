@@ -6,7 +6,8 @@
 namespace WarpEngine{
     struct ImageConfig{
         VkImageType imageType = VK_IMAGE_TYPE_2D;
-        VkExtent3D extent;
+        VkExtent2D extent;
+        uint32_t depth;
         uint32_t mipLevels = 1;
         uint32_t arrayLayers = 1;
         VkFormat format;
@@ -18,12 +19,27 @@ namespace WarpEngine{
         VkImageCreateFlags flags;
     };
 
-    class Image{
-        Image(ImageConfig config);
+    struct ImageViewConfig{
+        VkImageViewType viewType;
+        VkFormat format;
+        VkImageAspectFlags aspectFlags;
+        uint32_t baseMipLevel;
+        uint32_t levelCount;
+        uint32_t baseArrayLayer;
+        uint32_t layerCount;
     };
 
-    class ImageView{
+    class Image{
+        Image();
+        ~Image();
 
+        void createTexture2D(VkExtent2D extent,VkSampleCountFlagBits samples,VkSharingMode sharingMode);
+        void setIntialLayout(VkImageLayout layout);
+        void setImageUsageFlags(VkImageUsageFlags usage);
+
+        private:
+            VkImageCreateInfo imageInfo;
+            VkImageViewCreateInfo imageViewInfo;
     };
 }
 
